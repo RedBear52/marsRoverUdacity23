@@ -19,24 +19,24 @@ const render = async (root, state) => {
 
 // create content
 const App = (state) => {
-    console.log(store)
+    const featuredRover = store.toJS().manifest.name
+    // console.log(store)
     // const featuredRover = store.get('featuredRover').toJS()
     // const roverPics = store.get('roverPics').toJS()
     // let dataBase = store.toJS().manifest 
     // line above - destructure? into variables in the fetch realm and then put here?!
-
+    // console.log(store.toJS().manifest.landing_date)
     // console.log(store.map(keys => keys))
 
     return `
         <header><h1>NASA's Mars Rover Data</h1></header>
         <main>
             <section>
-                <h3>Featured Rover: ${store.get('featuredRover')}</h3>
+                <div> ${featuredRoverName(featuredRover)}</div>
                 <p>Here are the latest photos taken by ${store.toJS().manifest.name} on earth date: ${store.toJS().roverPics[0].earth_date}</p>
-                <p>
+                <div>
                     ${displayRoverImages()}                
-                    <img src="${store.toJS().roverPics[0].img_src}">
-                </p>
+                </div>
                 <p>
                     The launch date for ${store.toJS().manifest.name}'s mission was ${store.toJS().manifest.launch_date} and the landing date was ${store.toJS().manifest.landing_date}.
                 </p>
@@ -54,8 +54,8 @@ const App = (state) => {
 window.addEventListener('load', () => {
     // const randomNum = Math.floor(Math.random() * 3)
     // getRoverManifest(store, store.get('rovers'))
-    getRoverPics('Curiosity')
-    getRoverManifest('Curiosity')
+    getRoverPics('Opportunity')
+    getRoverManifest('Opportunity')
     render(root, store)
    
 })
@@ -65,36 +65,31 @@ window.addEventListener('load', () => {
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
 const displayRoverImages = () => {
     const roverGallery = store.get('roverPics')
-    console.log(roverGallery.toJS())
     const curatedRoverGallery = roverGallery.slice(0,9)
-    console.log(curatedRoverGallery)
-    console.log(curatedRoverGallery.map(pic => pic.hasOwnProperty('img_src')).toJS())
-    
         if (curatedRoverGallery !== undefined) {
             return curatedRoverGallery.map(pic => {
                 return (
                 ` <div>
-                    <img src="${pic.img_src}"></img>
+                    <img src="${pic.toJS().img_src}"></img>
                 </div>
                 `)
-            }).join(' ')
+            }).join(' ') 
         } else { return `<p>Ah, Houston. We may have had a problem...
         we can't seem to find the photos you requested...please standby</p>`
     }
 }
 
-const featuredRoverName = (store) => {
-    if (store.get('featuredRover')) {
+const featuredRoverName = (roverName) => {
+    if (roverName) {
         return `
-            <h1>Welcome, ${store.get('featuredRover')}!</h1>
+            <h3>Featured Rover: ${roverName}</h3>
         `
     }
 
     return `
-        <h1>Hello!</h1>
+        <h3>Hello!</h3>
     `
 }
-
 // Example of a pure function that renders infomation requested from the backend
 
 
