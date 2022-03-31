@@ -1,14 +1,15 @@
-let store = {
-    user: { name: "Student" },
+let store = Immutable.Map({
     apod: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
-}
+    featuredRover: '',
+    roverPics: []
+})
 
 // add our markup to the page
 const root = document.getElementById('root')
 
-const updateStore = (store, newState) => {
-    store = Object.assign(store, newState)
+const updateStore = (state, newState) => {
+    store = state.merge(newState)
     render(root, store)
 }
 
@@ -16,27 +17,33 @@ const render = async (root, state) => {
     root.innerHTML = App(state)
 }
 
-
 // create content
 const App = (state) => {
-    let { rovers, apod } = state
+    console.log(store)
+    // const featuredRover = store.get('featuredRover').toJS()
+    // const roverPics = store.get('roverPics').toJS()
+    // let dataBase = store.toJS().manifest 
+    // line above - destructure? into variables in the fetch realm and then put here?!
+
+    // console.log(store.map(keys => keys))
 
     return `
-        <header></header>
+        <header><h1>NASA's Mars Rover Data</h1></header>
         <main>
-            ${Greeting(store.user.name)}
             <section>
-                <h3>Put things on the page!</h3>
-                <p>Here is an example section.</p>
+                <h3>Featured Rover: ${store.get('featuredRover')}</h3>
+                <p>Here are the latest photos taken by ${store.toJS().manifest.name} on earth date: ${store.toJS().roverPics[0].earth_date}</p>
                 <p>
-                    One of the most popular websites at NASA is the Astronomy Picture of the Day. In fact, this website is one of
-                    the most popular websites across all federal agencies. It has the popular appeal of a Justin Bieber video.
-                    This endpoint structures the APOD imagery and associated metadata so that it can be repurposed for other
-                    applications. In addition, if the concept_tags parameter is set to True, then keywords derived from the image
-                    explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
-                    but generally help with discoverability of relevant imagery.
+                    ${displayRoverImages()}                
+                    <img src="${store.toJS().roverPics[0].img_src}">
                 </p>
-                ${ImageOfTheDay(apod)}
+                <p>
+                    The launch date for ${store.toJS().manifest.name}'s mission was ${store.toJS().manifest.launch_date} and the landing date was ${store.toJS().manifest.landing_date}.
+                </p>
+                <p>
+                    The status of ${store.toJS().manifest.name}'s mission is '${store.toJS().manifest.status}''.
+                </p>
+            
             </section>
         </main>
         <footer></footer>
@@ -45,16 +52,41 @@ const App = (state) => {
 
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
+    // const randomNum = Math.floor(Math.random() * 3)
+    // getRoverManifest(store, store.get('rovers'))
+    getRoverPics('Curiosity')
+    getRoverManifest('Curiosity')
     render(root, store)
+   
 })
 
 // ------------------------------------------------------  COMPONENTS
 
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
-const Greeting = (name) => {
-    if (name) {
+const displayRoverImages = () => {
+    const roverGallery = store.get('roverPics')
+    console.log(roverGallery.toJS())
+    const curatedRoverGallery = roverGallery.slice(0,9)
+    console.log(curatedRoverGallery)
+    console.log(curatedRoverGallery.map(pic => pic.hasOwnProperty('img_src')).toJS())
+    
+        if (curatedRoverGallery !== undefined) {
+            return curatedRoverGallery.map(pic => {
+                return (
+                ` <div>
+                    <img src="${pic.img_src}"></img>
+                </div>
+                `)
+            }).join(' ')
+        } else { return `<p>Ah, Houston. We may have had a problem...
+        we can't seem to find the photos you requested...please standby</p>`
+    }
+}
+
+const featuredRoverName = (store) => {
+    if (store.get('featuredRover')) {
         return `
-            <h1>Welcome, ${name}!</h1>
+            <h1>Welcome, ${store.get('featuredRover')}!</h1>
         `
     }
 
@@ -64,42 +96,50 @@ const Greeting = (name) => {
 }
 
 // Example of a pure function that renders infomation requested from the backend
-const ImageOfTheDay = (apod) => {
 
-    // If image does not already exist, or it is not from today -- request it again
-    const today = new Date()
-    const photodate = new Date(apod.date)
-    console.log(photodate.getDate(), today.getDate());
-
-    console.log(photodate.getDate() === today.getDate());
-    if (!apod || apod.date === today.getDate() ) {
-        getImageOfTheDay(store)
-    }
-
-    // check if the photo of the day is actually type video!
-    if (apod.media_type === "video") {
-        return (`
-            <p>See today's featured video <a href="${apod.url}">here</a></p>
-            <p>${apod.title}</p>
-            <p>${apod.explanation}</p>
-        `)
-    } else {
-        return (`
-            <img src="${apod.image.url}" height="350px" width="100%" />
-            <p>${apod.image.explanation}</p>
-        `)
-    }
-}
 
 // ------------------------------------------------------  API CALLS
 
-// Example API call
-const getImageOfTheDay = (state) => {
-    let { apod } = state
-
-    fetch(`http://localhost:3000/apod`)
+const getRoverManifest = (roverName) => {
+    fetch(`http://localhost:8000/manifest/${roverName}`)
         .then(res => res.json())
-        .then(apod => updateStore(store, { apod }))
+        .then((manifestData) => {
+            let manifestDeets = manifestData.manifestInfo.photo_manifest
+            updateStore(store, { manifest: manifestDeets })
+            console.log(manifestData)
+            console.log(manifestDeets)
+            console.log(store.toJS())
+            console.log(store.toJS().manifest.landing_date)
+        })
+    }
 
-    return data
-}
+const getRoverPics = (roverName) => {
+    fetch(`http://localhost:8000/roverPicData/${roverName}`)
+        .then(res => res.json())
+        .then((roverData) => {
+            let roverPics = roverData.roverPicData.latest_photos
+            updateStore(store, { roverPics: roverPics })
+            console.log(roverPics)
+            console.log(roverData)
+            console.log(store.toJS())
+        })
+    }
+
+    // const getRoverManifest = (roverName) => {
+    //     const response = fetch(`http://localhost:3000/manifest/${roverName}`)
+    //     const data = response.json()
+    //     console.log(data)
+    //     const landingDate = data.manifestInfo.photo_manifest.landing_date
+    //     const launchDate = data.manifestInfo.photo_manifest.launch_date
+    //     const featuredRover = data.manifestInfo.photo_manifest.name
+    //     const missionStatus = data.manifestInfo.photo_manifest.status
+    //     console.log(store)
+    //     console.log(landingDate, launchDate, featuredRover, missionStatus)
+    //     updateStore(store, {
+    //         landingDate: landingDate,
+    //         launchDate: launchDate,
+    //         featuredRover: featuredRover,
+    //         missionStatus: missionStatus
+    //     }) 
+    //     console.log(missionStatus)
+    // }

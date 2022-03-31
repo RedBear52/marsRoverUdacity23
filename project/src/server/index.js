@@ -3,23 +3,33 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch')
 const path = require('path')
-
+const Immutable = require('immutable');
 const app = express()
-const port = 3000
+const port = 8000
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use('/', express.static(path.join(__dirname, '../public')))
 
-// your API calls
-
-// example API call
-app.get('/apod', async (req, res) => {
+// API Calls
+app.get('/manifest/:rovername', async (req, res) => {
     try {
-        let image = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${process.env.API_KEY}`)
+        const roverName = req.params.rovername
+        const manifestInfo = await fetch(`https://api.nasa.gov/mars-photos/api/v1/manifests/${roverName}/?api_key=${process.env.API_KEY}`)
             .then(res => res.json())
-        res.send({ image })
+        res.send({ manifestInfo })
+    } catch (err) {
+        console.log('error:', err);
+    }
+})
+
+app.get('/roverPicData/:rovername', async (req, res) => {
+    try {
+        const roverName = req.params.rovername
+        let roverPicData = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/${roverName}/latest_photos?api_key=${process.env.API_KEY}`)
+            .then(res => res.json())
+        res.send({ roverPicData })
     } catch (err) {
         console.log('error:', err);
     }
