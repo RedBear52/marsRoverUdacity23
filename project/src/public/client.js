@@ -17,33 +17,24 @@ const render = async (root, state) => {
     root.innerHTML = App(state)
 }
 
-// create content
+// APP: Higher Order Function (returns each separate component function)
 const App = (state) => {
-    const featuredRover = store.toJS().manifest.name
-    // console.log(store)
-    // const featuredRover = store.get('featuredRover').toJS()
-    // const roverPics = store.get('roverPics').toJS()
-    // let dataBase = store.toJS().manifest 
-    // line above - destructure? into variables in the fetch realm and then put here?!
-    // console.log(store.toJS().manifest.landing_date)
-    // console.log(store.map(keys => keys))
-
+    const manifestInfo = store.toJS().manifest
+    const featuredRover = manifestInfo.name
+    
     return `
         <header><h1>NASA's Mars Rover Data</h1></header>
         <main>
-            <section>
                 <div> ${featuredRoverName(featuredRover)}</div>
-                <p>Here are the latest photos taken by ${store.toJS().manifest.name} on earth date: ${store.toJS().roverPics[0].earth_date}</p>
-                <div>
+            <section>
+                <div class="gallery" id="img-gallery">
+                    ${displayManifestInfo()}                
+                </div>
+                <div class="gallery" id="img-gallery">
                     ${displayRoverImages()}                
                 </div>
-                <p>
-                    The launch date for ${store.toJS().manifest.name}'s mission was ${store.toJS().manifest.launch_date} and the landing date was ${store.toJS().manifest.landing_date}.
-                </p>
-                <p>
-                    The status of ${store.toJS().manifest.name}'s mission is '${store.toJS().manifest.status}''.
-                </p>
-            
+
+                
             </section>
         </main>
         <footer></footer>
@@ -52,10 +43,10 @@ const App = (state) => {
 
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
-    // const randomNum = Math.floor(Math.random() * 3)
-    // getRoverManifest(store, store.get('rovers'))
-    getRoverPics('Opportunity')
-    getRoverManifest('Opportunity')
+    const randomNum = Math.floor(Math.random() * 3)
+    const rovers = store.get('rovers')
+    getRoverPics(rovers[randomNum])
+    getRoverManifest(rovers[randomNum])
     render(root, store)
    
 })
@@ -64,31 +55,50 @@ window.addEventListener('load', () => {
 
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
 const displayRoverImages = () => {
-    const roverGallery = store.get('roverPics')
-    const curatedRoverGallery = roverGallery.slice(0,9)
-        if (curatedRoverGallery !== undefined) {
-            return curatedRoverGallery.map(pic => {
-                return (
-                ` <div>
-                    <img src="${pic.toJS().img_src}"></img>
-                </div>
-                `)
-            }).join(' ') 
-        } else { return `<p>Ah, Houston. We may have had a problem...
-        we can't seem to find the photos you requested...please standby</p>`
+const roverGallery = store.get('roverPics')
+const curatedRoverGallery = roverGallery.slice(0,9)
+ if (curatedRoverGallery !== undefined) {
+     return curatedRoverGallery.map(pic => {
+        return (
+        ` <div><img src="${pic.toJS().img_src}"></img></div>`)}).join(' ')
+    } else { 
+        return `
+    <p>Ah, Houston. We may have had a problem...
+    we can't seem to find the photos you requested...
+    please standby</p>
+    `
     }
 }
 
 const featuredRoverName = (roverName) => {
-    if (roverName) {
+    if (roverName !== undefined) {
         return `
             <h3>Featured Rover: ${roverName}</h3>
         `
     }
 
     return `
-        <h3>Hello!</h3>
+        <p>Ah, Houston, we've had a problem...we can't seem to find the mission manifest for the requested rover...</p>
+        <p>Please standby...or maybe try refreshing the page and starting over again...</p>
     `
+}
+
+const displayManifestInfo = () => {
+    const latestPhotoDate = store.toJS().roverPics[0].earth_date
+    const manifestInfo = store.toJS().manifest
+    const featuredRover = manifestInfo.name
+    const landingDate = manifestInfo.landing_date
+    const launchDate = manifestInfo.launch_date
+    const missionStatus = manifestInfo.status
+    return (
+        `<div>  
+        <p> Here are the latest photos taken by ${featuredRover}</p> 
+        <p> These photos were taken on earth date: ${latestPhotoDate}</p>
+        <p> ${featuredRover}'s launch date: ${launchDate}</p>
+        <p> Landing date: ${landingDate}</p>
+        <p> Mission status: '${missionStatus}' </p>
+     </div>`
+    )
 }
 // Example of a pure function that renders infomation requested from the backend
 
@@ -101,10 +111,6 @@ const getRoverManifest = (roverName) => {
         .then((manifestData) => {
             let manifestDeets = manifestData.manifestInfo.photo_manifest
             updateStore(store, { manifest: manifestDeets })
-            console.log(manifestData)
-            console.log(manifestDeets)
-            console.log(store.toJS())
-            console.log(store.toJS().manifest.landing_date)
         })
     }
 
@@ -114,9 +120,6 @@ const getRoverPics = (roverName) => {
         .then((roverData) => {
             let roverPics = roverData.roverPicData.latest_photos
             updateStore(store, { roverPics: roverPics })
-            console.log(roverPics)
-            console.log(roverData)
-            console.log(store.toJS())
         })
     }
 
