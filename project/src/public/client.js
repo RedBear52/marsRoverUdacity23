@@ -23,25 +23,30 @@ const App = (state) => {
     const featuredRover = manifestInfo.name
     
     return `
-        <header><h1>NASA's Mars Rover Data</h1></header>
+        <header>
+            <h1>NASA's Mars Rover Data</h1>
+        </header>
         <main>
-                <div> ${featuredRoverName(featuredRover)}</div>
+                <div class="rover-name"> 
+                    ${featuredRoverName(featuredRover)}
+                </div>
             <section>
-                <div class="gallery" id="img-gallery">
+                <div class="manifest" id="manifest-info">
                     ${displayManifestInfo()}                
                 </div>
+            </section>
                 <div class="gallery" id="img-gallery">
                     ${displayRoverImages()}                
                 </div>
-                <div class="gallery" id="img-gallery">
+            <section>
+                <div class="selector-btn-container" id="img-gallery">
                     ${createRoverSelectors()}                
-                </div>
-                <div class="gallery" id="img-gallery">
-                    ${selectorEventHandlers()}                
                 </div>
             </section>
         </main>
-        <footer></footer>
+        <footer>
+            This is the FOOTER
+        </footer>
     `
 }
 
@@ -52,7 +57,6 @@ window.addEventListener('load', () => {
     getRoverPics(rovers[randomNum])
     getRoverManifest(rovers[randomNum])
     render(root, store)
-   
 })
 
 // ------------------------------------------------------  COMPONENTS
@@ -87,7 +91,7 @@ const featuredRoverName = (roverName) => {
     `
 }
 
-const displayManifestInfo = (rover) => {
+const displayManifestInfo = (roverSelection) => {
     const latestPhotoDate = store.toJS().roverPics[0].earth_date
     const manifestInfo = store.toJS().manifest
     const featuredRover = manifestInfo.name
@@ -105,25 +109,23 @@ const displayManifestInfo = (rover) => {
     )
 }
 
+const roverClicked = (rover) => {
+    getRoverPics(`${rover}`)
+    getRoverManifest(`${rover}`)
+}
+
 const createRoverSelectors = () => {
     const rover = () => store.get('rovers') 
     return rover().map(rover => {
         return (`
             <div class="selector-btn-container">
-                <button class="selector-btn" id="${rover}" onclick="displayManifestInfo(${rover})">
+                <button class="selector-btn" id="${rover}" onclick="roverClicked('${rover}')">
                      ${rover}
                 </button>
             </div> 
             `
      ) }).join('')
     }
-
-
-
-const selectorEventHandlers = () => {
-    return console.log('listen and react!')
-}
-
 
 // Example of a pure function that renders infomation requested from the backend
 
@@ -134,7 +136,7 @@ const getRoverManifest = (roverName) => {
     fetch(`http://localhost:8000/manifest/${roverName}`)
         .then(res => res.json())
         .then((manifestData) => {
-            let manifestDeets = manifestData.manifestInfo.photo_manifest
+            const manifestDeets = manifestData.manifestInfo.photo_manifest
             updateStore(store, { manifest: manifestDeets })
         })
     }
