@@ -1,27 +1,26 @@
+// creatting an Immutable Map to store application state
 let store = Immutable.Map({
-    apod: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
-    featuredRover: '',
-    roverPics: []
 })
 
 // add our markup to the page
 const root = document.getElementById('root')
 
+// updating the state store
 const updateStore = (state, newState) => {
     store = state.merge(newState)
     render(root, store)
 }
 
+// rendering state 
 const render = async (root, state) => {
     root.innerHTML = App(state)
 }
 
-// APP: Higher Order Function (returns each separate component function)
+// APP: Higher Order Function - returns individual component functions
 const App = (state) => {
     const manifestInfo = store.toJS().manifest
     const featuredRover = manifestInfo.name
-    
     return `
         <header>
             <h1>NASA's Mars Rover Data</h1>
@@ -51,6 +50,7 @@ const App = (state) => {
 }
 
 // listening for load event because page should load before any JS is called
+// using Math.random to choose random rover on load
 window.addEventListener('load', () => {
     const randomNum = Math.floor(Math.random() * 3)
     const rovers = store.get('rovers')
@@ -61,7 +61,8 @@ window.addEventListener('load', () => {
 
 // ------------------------------------------------------  COMPONENTS
 
-// Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
+// Pure function that renders a photo gallery built from the latest photos taken by the featured rover
+// incorporates get, map & slice methods
 const displayRoverImages = () => {
 const roverGallery = store.get('roverPics')
 const curatedRoverGallery = roverGallery.slice(0,9)
@@ -78,6 +79,7 @@ const curatedRoverGallery = roverGallery.slice(0,9)
     }
 }
 
+//returns display elements with selected rover's name
 const featuredRoverName = (roverName) => {
     if (roverName !== undefined) {
         return `
@@ -91,6 +93,7 @@ const featuredRoverName = (roverName) => {
     `
 }
 
+// returns display elements with the chosen rover's manifest info
 const displayManifestInfo = (roverSelection) => {
     const latestPhotoDate = store.toJS().roverPics[0].earth_date
     const manifestInfo = store.toJS().manifest
@@ -109,11 +112,13 @@ const displayManifestInfo = (roverSelection) => {
     )
 }
 
+// calls API with selected rover as arg
 const roverClicked = (rover) => {
     getRoverPics(`${rover}`)
     getRoverManifest(`${rover}`)
 }
 
+// dynamically generates rover selector buttons with the help of the map (high order array) method
 const createRoverSelectors = () => {
     const rover = () => store.get('rovers') 
     return rover().map(rover => {
@@ -138,6 +143,7 @@ const getRoverManifest = (roverName) => {
         .then((manifestData) => {
             const manifestDeets = manifestData.manifestInfo.photo_manifest
             updateStore(store, { manifest: manifestDeets })
+            console.log(store.toJS())
         })
     }
 
