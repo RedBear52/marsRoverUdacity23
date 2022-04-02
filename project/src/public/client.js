@@ -129,12 +129,10 @@ const createRoverSelectors = () => {
                 </button>
             </div> 
             `
-     ) }).join('')
-    }
+    ) }).join('')
+}
 
-// Example of a pure function that renders infomation requested from the backend
-
-
+// pure functions that renders infomation requested from the backend
 // ------------------------------------------------------  API CALLS
 
 const getRoverManifest = (roverName) => {
@@ -143,7 +141,6 @@ const getRoverManifest = (roverName) => {
         .then((manifestData) => {
             const manifestDeets = manifestData.manifestInfo.photo_manifest
             updateStore(store, { manifest: manifestDeets })
-            console.log(store.toJS())
         })
     }
 
