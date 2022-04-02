@@ -33,8 +33,12 @@ const App = (state) => {
                 <div class="gallery" id="img-gallery">
                     ${displayRoverImages()}                
                 </div>
-
-                
+                <div class="gallery" id="img-gallery">
+                    ${createRoverSelectors()}                
+                </div>
+                <div class="gallery" id="img-gallery">
+                    ${selectorEventHandlers()}                
+                </div>
             </section>
         </main>
         <footer></footer>
@@ -83,7 +87,7 @@ const featuredRoverName = (roverName) => {
     `
 }
 
-const displayManifestInfo = () => {
+const displayManifestInfo = (rover) => {
     const latestPhotoDate = store.toJS().roverPics[0].earth_date
     const manifestInfo = store.toJS().manifest
     const featuredRover = manifestInfo.name
@@ -100,6 +104,27 @@ const displayManifestInfo = () => {
      </div>`
     )
 }
+
+const createRoverSelectors = () => {
+    const rover = () => store.get('rovers') 
+    return rover().map(rover => {
+        return (`
+            <div class="selector-btn-container">
+                <button class="selector-btn" id="${rover}" onclick="displayManifestInfo(${rover})">
+                     ${rover}
+                </button>
+            </div> 
+            `
+     ) }).join('')
+    }
+
+
+
+const selectorEventHandlers = () => {
+    return console.log('listen and react!')
+}
+
+
 // Example of a pure function that renders infomation requested from the backend
 
 
@@ -122,22 +147,3 @@ const getRoverPics = (roverName) => {
             updateStore(store, { roverPics: roverPics })
         })
     }
-
-    // const getRoverManifest = (roverName) => {
-    //     const response = fetch(`http://localhost:3000/manifest/${roverName}`)
-    //     const data = response.json()
-    //     console.log(data)
-    //     const landingDate = data.manifestInfo.photo_manifest.landing_date
-    //     const launchDate = data.manifestInfo.photo_manifest.launch_date
-    //     const featuredRover = data.manifestInfo.photo_manifest.name
-    //     const missionStatus = data.manifestInfo.photo_manifest.status
-    //     console.log(store)
-    //     console.log(landingDate, launchDate, featuredRover, missionStatus)
-    //     updateStore(store, {
-    //         landingDate: landingDate,
-    //         launchDate: launchDate,
-    //         featuredRover: featuredRover,
-    //         missionStatus: missionStatus
-    //     }) 
-    //     console.log(missionStatus)
-    // }
