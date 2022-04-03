@@ -16,8 +16,9 @@ main {
   padding: 20px;
 }
 
-img {
-  min-width: 80vw;
+.rover-image {
+  width: 500px;
+  height: 500px;
 }
 
 footer {

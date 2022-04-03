@@ -3,7 +3,7 @@ let store = Immutable.Map({
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
 })
 
-// add our markup to the page
+// assigning the display div to the 'root' element
 const root = document.getElementById('root')
 
 // updating the state store
@@ -17,7 +17,7 @@ const render = async (root, state) => {
     root.innerHTML = App(state)
 }
 
-// APP: Higher Order Function - returns individual component functions
+// APP: the main, Higher Order Function - returns a collection of component functions
 const App = (state) => {
     const manifestInfo = store.toJS().manifest
     const featuredRover = manifestInfo.name
@@ -60,7 +60,6 @@ window.addEventListener('load', () => {
 })
 
 // ------------------------------------------------------  COMPONENTS
-
 // Pure function that renders a photo gallery built from the latest photos taken by the featured rover
 // incorporates get, map & slice methods
 const displayRoverImages = () => {
@@ -69,7 +68,7 @@ const curatedRoverGallery = roverGallery.slice(0,9)
  if (curatedRoverGallery !== undefined) {
      return curatedRoverGallery.map(pic => {
         return (
-        ` <div><img src="${pic.toJS().img_src}"></img></div>`)}).join(' ')
+        ` <div><img src="${pic.toJS().img_src}" class="rover-image" height="400px" width="400px"></img></div>`)}).join(' ')
     } else { 
         return `
     <p>Ah, Houston. We may have had a problem...
@@ -137,7 +136,7 @@ const createRoverSelectors = () => {
 // ------------------------------------------------------  API CALLS
 
 const getRoverManifest = (roverName) => {
-    fetch(`http://localhost:8000/manifest/${roverName}`)
+    fetch(`http://localhost:3000/manifest/${roverName}`)
         .then(res => res.json())
         .then((manifestData) => {
             const manifestDeets = manifestData.manifestInfo.photo_manifest
@@ -146,7 +145,7 @@ const getRoverManifest = (roverName) => {
     }
 
 const getRoverPics = (roverName) => {
-    fetch(`http://localhost:8000/roverPicData/${roverName}`)
+    fetch(`http://localhost:3000/roverPicData/${roverName}`)
         .then(res => res.json())
         .then((roverData) => {
             let roverPics = roverData.roverPicData.latest_photos

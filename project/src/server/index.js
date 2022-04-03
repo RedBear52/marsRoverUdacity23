@@ -5,7 +5,7 @@ const fetch = require('node-fetch')
 const path = require('path')
 const Immutable = require('immutable');
 const app = express()
-const port = 8000
+const port = 3000
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -13,7 +13,7 @@ app.use(bodyParser.json())
 app.use('/', express.static(path.join(__dirname, '../public')))
 
 // API Calls fetching rover manifest data and photo data
-// incorporaties routes to dynamically respond to user's rover selection
+// paramaterized routes to dynamically respond to user's rover selection
 app.get('/manifest/:rovername', async (req, res) => {
     try {
         const roverName = req.params.rovername
