@@ -88,7 +88,8 @@ const featuredRoverName = (roverName) => {
     }
 
     return `
-        <p>Ah, Houston, we've had a problem...we can't seem to find the mission manifest for the requested rover...</p>
+        <p>Ah, Houston, we've had a problem...
+        we can't seem to find the mission manifest for the requested rover...</p>
         <p>Please standby...or maybe try refreshing the page and starting over again...</p>
     `
 }

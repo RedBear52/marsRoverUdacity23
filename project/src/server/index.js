@@ -17,8 +17,9 @@ app.use('/', express.static(path.join(__dirname, '../public')))
 app.get('/manifest/:rovername', async (req, res) => {
     try {
         const roverName = req.params.rovername
-        const manifestInfo = await fetch(`https://api.nasa.gov/mars-photos/api/v1/manifests/${roverName}/?api_key=${process.env.API_KEY}`)
-            .then(res => res.json())
+        const manifestInfo = await fetch(
+        `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverName}/?api_key=${process.env.API_KEY}`
+        ).then(res => res.json())
         res.send({ manifestInfo })
     } catch (err) {
         console.log('error:', err);
@@ -28,8 +29,9 @@ app.get('/manifest/:rovername', async (req, res) => {
 app.get('/roverPicData/:rovername', async (req, res) => {
     try {
         const roverName = req.params.rovername
-        let roverPicData = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/${roverName}/latest_photos?api_key=${process.env.API_KEY}`)
-            .then(res => res.json())
+        let roverPicData = await fetch(
+        `https://api.nasa.gov/mars-photos/api/v1/rovers/${roverName}/latest_photos?api_key=${process.env.API_KEY}`
+        ).then(res => res.json())
         res.send({ roverPicData })
     } catch (err) {
         console.log('error:', err);
