@@ -1,0 +1,83 @@
+body {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial;
+    min-height: 100vh;
+    line-height: 1.4em;
+    background: url("./assets/images/space-galaxy.jpeg");
+    background-color: black;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  a {
+    color: orange;
+  }
+  
+  main {
+    flex: 1;
+  }
+  
+  .container {
+    margin: 50px auto;
+    width: 500px;
+  }
+  section {
+    margin-bottom: 50px;
+  }
+  button {
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: rgb(255, 123, 0);
+    color: white;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: none;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+  }
+  #rover {
+    display: grid;
+    column-gap: 10px;
+    justify-content: center;
+  }
+  
+  #board {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid white;
+    margin-bottom: 30px;
+  }
+  
+  /* -------------------  TABLET  --------------------- */
+  @media (min-width: 368px) {
+    /* use mobile */
+    .container {
+      width: 350px;
+    }
+    button {
+      width: 350px;
+    }
+    #rover {
+      grid-template-columns: 100%;
+      justify-content: center;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    /* use mobile */
+    .container {
+      width: 700px;
+    }
+    button {
+      width: 700px;
+    }
+    #rover {
+      grid-template-columns: 32% 32% 32%;
+    }
+  }

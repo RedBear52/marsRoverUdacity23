@@ -37,14 +37,14 @@ const App = (state) => {
                 <div class="gallery" id="img-gallery">
                     ${displayRoverImages()}                
                 </div>
-            <div class="selector-btn-container">
-                <div  class="selector-btn" id="img-gallery">
+            <div class="selector-btn-outer">
+                <div  class="selector-btn-container" id="img-gallery">
                     ${createRoverSelectors()}                
                 </div>
             </div>
         </main>
         <footer>
-            This is the FOOTER
+            Images made possible by: <a href="https://api.nasa.gov/">NASA's Open API</a>
         </footer>
     `
 }
@@ -124,7 +124,7 @@ const createRoverSelectors = () => {
     return rover().map(rover => {
         return (`
             <div class="selector-btn-container">
-                <button class="selector-btn" id="${rover}" onclick="roverClicked('${rover}')">
+                <button class="selector-btn" id="${rover}" value="" onclick="roverClicked('${rover}')">
                      ${rover}
                 </button>
             </div> 
