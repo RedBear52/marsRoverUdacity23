@@ -3,26 +3,44 @@
 body {
   display: flex;
   flex-direction: column;
-  font-family: Arial;
+  font-family: monospace;
   min-height: 100vh;
 }
 
 header {
   /* header styles */
-}
+}r
 
 main {
   flex: 1;
   padding: 20px;
 }
 
-.rover-image {
-  width: 500px;
-  height: 500px;
+.gallery {
+  display: flex;
+  height: 400px;
+  grid-template-rows: 1;
+  grid-template-columns: max-content;
+  justify-content: space-between;
+  gap: 3em;
+  overflow: scroll;
+}
+
+.selector-btn-container {
+  display: grid;
+  justify-content: left;
+  height: 37px;
+}
+
+.selector-btn {
+  display: flex;
+  padding: 1em;
+  margin: 1em;
+  width: 33vw;
 }
 
 footer {
-  /* footer styles */
+  position: sticky;
 }
 
 /* -------------------  TABLET  --------------------- */

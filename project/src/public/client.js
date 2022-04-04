@@ -37,11 +37,11 @@ const App = (state) => {
                 <div class="gallery" id="img-gallery">
                     ${displayRoverImages()}                
                 </div>
-            <section>
-                <div class="selector-btn-container" id="img-gallery">
+            <div class="selector-btn-container">
+                <div  class="selector-btn" id="img-gallery">
                     ${createRoverSelectors()}                
                 </div>
-            </section>
+            </div>
         </main>
         <footer>
             This is the FOOTER
@@ -68,7 +68,7 @@ const curatedRoverGallery = roverGallery.slice(0,9)
  if (curatedRoverGallery !== undefined) {
      return curatedRoverGallery.map(pic => {
         return (
-        ` <div><img src="${pic.toJS().img_src}" class="rover-image" height="400px" width="400px"></img></div>`)}).join(' ')
+        `<img src="${pic.toJS().img_src}" class="rover-image" height="400px" width="400px"></img>`)}).join(' ')
     } else { 
         return `
     <p>Ah, Houston. We may have had a problem...
