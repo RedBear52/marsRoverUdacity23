@@ -42,10 +42,11 @@ const App = (state) => {
                     ${createRoverSelectors()}                
                 </div>
             </div>
-        </main>
         <footer>
-            Images made possible by: <a href="https://api.nasa.gov/">NASA's Open API</a>
+            Images and information made possible by: <a href="https://api.nasa.gov/">NASA's Public API</a>
         </footer>
+        </main>
+
     `
 }
 
@@ -82,7 +83,9 @@ const curatedRoverGallery = roverGallery.slice(0,9)
 const featuredRoverName = (roverName) => {
     if (roverName !== undefined) {
         return `
-            <h3>Featured Rover: ${roverName}</h3>
+            <div class="h-wrapper">
+                <h2>${roverName.toUpperCase()}</h2>
+            </div>
         `
     }
 
@@ -102,12 +105,13 @@ const displayManifestInfo = (roverSelection) => {
     const launchDate = manifestInfo.launch_date
     const missionStatus = manifestInfo.status
     return (
-        `<div>  
-        <p> Here are the latest photos taken by ${featuredRover}</p> 
-        <p> These photos were taken on earth date: ${latestPhotoDate}</p>
-        <p> ${featuredRover}'s launch date: ${launchDate}</p>
-        <p> Landing date: ${landingDate}</p>
-        <p> Mission status: '${missionStatus}' </p>
+        `<div> 
+            <ul> 
+                <li>These photos were taken by <em><strong>${featuredRover}</strong></em> on earth date: <strong>${latestPhotoDate}</strong></li>
+                <li><em><strong>${featuredRover}</strong></em>'s launch date: <strong>${launchDate}</strong></li>
+                <li>Landing date: <strong>${landingDate}</strong></li>
+                <li>Mission status: <strong>${missionStatus.toUpperCase()}</strong> </li>
+            </ul>
      </div>`
     )
 }

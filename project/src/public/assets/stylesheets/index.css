@@ -1,5 +1,3 @@
-/* -------------------  MOBILE  --------------------- */
-
 body {
   transform: translateY(10%);
   color: white;
@@ -12,45 +10,57 @@ body {
   background-image: url("https://www.nasa.gov/sites/default/files/styles/full_width_feature/public/thumbnails/image/pia22486-main.jpg");
   text-align: center;
   margin: 1em;
-  background-repeat: no-repeat;
+  /* background-repeat: no-repeat; */
   background-size: cover;
 }
 
 main {
   flex: 1;
   padding: 20px;
+  max-height: 1200px;
 }
 
 a {
   color: white;
 }
 
-.h1 {
-  padding: .5em;
+h1 {
+  padding: 2em;
+  font-size: 5rem;
+  color: #832805d9;
+  background-color: rgba(250, 189, 154, 0.7);
+  margin: 0;
 }
 
-.h3 {
+h2 {
+  font-size: xx-large;
+  font-weight: 900;
+}
+
+h3 {
   margin: 1em;
-  padding: .5em;
+  vertical-align: center;
+}
+
+
+
+.h-wrapper {
+  background-color: chocolate; 
+  padding: 1rem;
+  background-color: rgb(128, 0, 0, 0.7); 
 }
 
 .gallery {
   display: grid;
   margin-top: 1em;
-  /* width: 100vw; */
   grid-template-rows: 1;
   justify-content: space-between;
   gap: 1em;
   overflow: scroll;
 }
 
-.manifest {
-  margin: 1em;
-}
-
 #manifest-info.manifest {
-  margin: 1em;
-  padding: 2em;
+  background-color: rgba(228, 108, 9, 0.85); 
 }
 
 #img-gallery.gallery {
@@ -59,7 +69,6 @@ a {
   flex-flow: row;
   align-items: center;
   justify-content: left;
-  cursor: pointer;
   cursor: pointer;
 }
 
@@ -85,7 +94,7 @@ img {
   font-size: x-large;
   border-radius: 4px;
   padding: 10px 20px;
-  background-color: #fabd9a; opacity: .95;
+  background-color: rgb(250, 189, 154); opacity: .95;
   color: maroon;
   height: 10vh;
   margin-bottom: 20px;
@@ -135,6 +144,10 @@ img {
 #Opportunity.selector-btn:hover {
   width: 40vw;
   padding: 0;
+}
+
+footer {
+  padding: 1em;
 }
 
 
